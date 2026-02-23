@@ -19,10 +19,9 @@ dotenv.config({
     path : "./.env"
 });
 
-
-
 // testing purpose
 app.get("/", (req, res)=>{
+    console.log("Welcome to Project Management Backend");
     res.status(200).json({message : "Welcome to Project Management Backend", success : true});
 });
 
