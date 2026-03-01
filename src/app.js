@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import dbConnection from "./database/db.js";
+import userRoutes from "./routes/user.routes.js";
 
 const app = express();
 const PORT = 6500;
@@ -14,6 +15,8 @@ app.use(cors({
     credentials : true,
     allowedHeaders : ["Content-Type", "Authorization"]
 }))
+
+app.use("/users", userRoutes);
 
 dotenv.config({
     path : "./.env"
