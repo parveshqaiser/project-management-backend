@@ -14,9 +14,7 @@ app.use(cors({
     methods : ["GET", "POST", "PUT", "PATCH","DELETE"],
     credentials : true,
     allowedHeaders : ["Content-Type", "Authorization"]
-}))
-
-app.use("/users", userRoutes);
+}));
 
 dotenv.config({
     path : "./.env"
@@ -24,16 +22,18 @@ dotenv.config({
 
 // testing purpose
 app.get("/", (req, res)=>{
-    console.log("Welcome to Project Management Backend");
     res.status(200).json({message : "Welcome to Project Management Backend", success : true});
 });
+
+app.use("/api/v1/auth", userRoutes);
 
 dbConnection().then(()=>{
     app.listen(PORT, ()=>{
         console.log(`Server is running at port http://localhost:${PORT}`);
     });
 }).catch(error =>{
-    console.log("Some error in connectiing DB ",error)
-})
+    console.log("Some error in connecting DB ",error)
+    process.exit(1);
+});
 
 

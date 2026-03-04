@@ -1,53 +1,11 @@
+
 import express from "express";
-import {
-  UserRegisterService,
-  verifyEmailService,
-} from "../controllers/user.controller.js";
-import { sendRegistrationEmail } from "../utils/emailService.js";
+import {userRegistration,verifyEmailService} from "../controllers/user.controller.js";
 
 
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
-  try {
-    if (!req.body) {
-      throw new Error("User data is required for registration");
-    }
-    const result = await UserRegisterService(req.body);
-
-    if (result?.success !== true) {
-      return res.status(400).json({
-        message: "Registration failed",
-        success: false,
-        error: result.error,
-      });
-    }
-
-    res.status(201).json({
-      message: "User registered successfully",
-      success: true,
-      data: result.newUser || result.updatedUser,
-    });
-
-    // Send email in background (don't await, just fire it off)
-    if (result.newUser) {
-      sendRegistrationEmail(result.newUser).catch((err) =>
-        console.error("Background email failed:", err),
-      );
-    }else if (result.updatedUser) {
-      sendRegistrationEmail(result.updatedUser).catch((err) =>
-        console.error("Background updated user email failed:", err),
-      );
-    }
-  } catch (error) {
-    console.log("Error in registering user ", error);
-    res.status(500).json({
-      message: "Some error in registering user",
-      success: false,
-      error: error.message,
-    });
-  }
-});
+router.post("/register", userRegistration);
 
 router.get("/verify-email", async (req, res) => {
   try {
