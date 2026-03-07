@@ -431,7 +431,7 @@ export const userLoginService = async (req, res) => {
 
     const userLoginsAttempts = await UserSessionModel.find({
       userId: user?._id,
-      isActive: true,
+      isActive: false,
       loginTime: { $gte: lastOneHour },
     });
 
