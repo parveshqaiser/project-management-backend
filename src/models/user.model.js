@@ -94,7 +94,7 @@ const UserSessionSchema = new mongoose.Schema({
   },
   isActive: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 });
 const UserSessionModel = new mongoose.model("user-sessions", UserSessionSchema);
