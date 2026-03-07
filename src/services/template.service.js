@@ -9,7 +9,7 @@ let mailGenerator = new Mailgen({
     },
 });
 
-export let emailVerificationTemplate = ()=>{
+export let emailVerificationTemplate = (firstName, lastName, verificationURL)=>{
 
     let emailContent = {
         body: {
@@ -30,5 +30,27 @@ export let emailVerificationTemplate = ()=>{
     return mailGenerator.generate(emailContent);
 }
 
-// simillary reset passowrod template
+
+export let passwordResetContentTemplate = (firstName, lastName, resetURL)=>{
+
+    let emailContent = {
+        body: {
+            name: `${firstName} ${lastName}`,
+            intro:
+                "You recently requested to reset your password. Click the button below to proceed.",
+            action: {
+                instructions: 'If you did not request a password reset, you can safely ignore this email.',
+                button: {
+                    color: '#FF4136',
+                    text: 'Reset your password',
+                    link: resetURL,
+                },
+            },
+            outro: 'This link will expire in a short time for security reasons.',
+        },
+    };
+
+    return mailGenerator.generate(emailContent);
+}
+
 
