@@ -431,11 +431,11 @@ export const userLoginService = async (req, res) => {
 
     const userLoginsAttempts = await UserSessionModel.find({
       userId: user?._id,
-      isActive: false,
+      status: "failed_password",
       loginTime: { $gte: lastOneHour },
     });
 
-    if (userLoginsAttempts && userLoginsAttempts.length > 3) {
+    if (userLoginsAttempts && userLoginsAttempts.length >= 3) {
       return res.status(429).json({
         message: "Too many login attempts. Please try again later.",
         success: false,
@@ -444,31 +444,42 @@ export const userLoginService = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user?.password);
 
-    const userSession = new UserSessionModel({
-      userId: user?._id,
-      username: user?.username,
-      loginTime: generateTimeStamp(),
-      logoutTime: "",
-      isActive: true,
-    });
-
-    await userSession.save();
-
     if (!isMatch) {
+      // Save failed attempt with status: "failed_password"
+      const failedSession = new UserSessionModel({
+        userId: user?._id,
+        username: user?.username,
+        loginTime: generateTimeStamp(),
+        logoutTime: null,
+        isActive: false,
+        status: "failed_password",
+      });
+
+      await failedSession.save();
+
       return res.status(400).json({
         message: "Invalid password. Please try again.",
         success: false,
       });
     }
 
+    //Only create successful session after password verification
+    const userSession = new UserSessionModel({
+      userId: user?._id,
+      username: user?.username,
+      loginTime: generateTimeStamp(),
+      logoutTime: null,
+      isActive: true,
+      status: "success",
+    });
+
+    await userSession.save();
+
     const payload = {
       userId: user?._id || "",
       username: user?.username || "",
       email: user?.email || "",
     };
-
-    console.log("LOGIN - JWT_SECRET for signing:", process.env.JWT_SECRET);
-    console.log("LOGIN - JWT_SECRET length:", process.env.JWT_SECRET?.length);
 
     const accessToken = await jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1h",
@@ -522,7 +533,7 @@ export const userLogoutService = async (req, res) => {
         success: false,
       });
     }
-    console.log("userLogoutService called with user:", req.user);
+	
     const { userId, username } = req.user;
 
     await LoginModel.updateOne(
@@ -539,12 +550,11 @@ export const userLogoutService = async (req, res) => {
       userId: userId,
     }).sort({ loginTime: -1 });
 
-    console.log("userLastLogin", userLastLogin);
-
     await userLastLogin.updateOne({
       $set: {
         logoutTime: generateTimeStamp(),
         isActive: false,
+        status: "logged_out",
       },
     });
 

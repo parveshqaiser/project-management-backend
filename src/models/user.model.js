@@ -87,14 +87,20 @@ const UserSessionSchema = new mongoose.Schema({
     required: true,
   },
   loginTime: {
-    type: String,
+    type: Number,
   },
   logoutTime: {
-    type: String,
+    type: Number,
+    default: null,
   },
   isActive: {
     type: Boolean,
     default: false,
+  },
+  status: {
+    type: String,
+    enum: ["success", "failed_password", "logged_out"],
+    default: "failed_password",
   },
 });
 const UserSessionModel = new mongoose.model("user-sessions", UserSessionSchema);
