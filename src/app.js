@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import dbConnection from "./database/db.js";
 import userRoutes from "./routes/user.routes.js";
+import projectRouter from "./routes/project.routes.js";
 
 const app = express();
 const PORT = 6500;
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/projects", projectRouter);
 
 dbConnection()
   .then(() => {

@@ -45,10 +45,27 @@ const UserSchema = new mongoose.Schema({
     type: String,
   },
   createdAt: {
+    type: Number,
+  },
+  createdBy: {
     type: String,
+    ref: "users",
   },
   updatedAt: {
+    type: Number,
+  },
+  updatedBy: {
     type: String,
+    ref: "users",
+  },
+  role: {
+    type: String,
+    enum: ["super_admin", "admin", "member"],
+    default: "member",
+  },
+  del_flag: {
+    type: Boolean,
+    default: false,
   },
 });
 
