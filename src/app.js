@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import dbConnection from "./database/db.js";
 import userRoutes from "./routes/user.routes.js";
-import projectRouter from "./routes/project.routes.js";
+import projectRoutes from "./routes/project.routes.js";
 
 const app = express();
 const PORT = 6500;
@@ -12,30 +12,28 @@ const PORT = 6500;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
-  cors({
-    origin: "",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
+	cors({
+		origin: "",
+		methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+		credentials: true,
+		allowedHeaders: ["Content-Type", "Authorization"],
+	}),
 );
 
 app.get("/", (req, res) => {
-  res
-    .status(200)
-    .json({ message: "Welcome to Project Management Backend", success: true });
+	res.status(200).json({ message: "Welcome to Project Management Backend", success: true });
 });
 
 app.use("/api/v1/auth", userRoutes);
-app.use("/api/v1/projects", projectRouter);
+app.use("/api/v1/projects",projectRoutes);
 
 dbConnection()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server is running at port http://localhost:${PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.log("Some error in connecting DB ", error);
-    process.exit(1);
-  });
+	.then(() => {
+		app.listen(PORT, () => {
+		console.log(`Server is running at port http://localhost:${PORT}`);
+		});
+	})
+	.catch((error) => {
+		console.log("Some error in connecting DB ", error);
+		process.exit(1);
+});
