@@ -18,6 +18,24 @@ import moment from "moment";
 
 export const userRegistration = async (req, res) => {
   try {
+    if (!req?.user) {
+      return res.status(401).json({
+        message: "Unauthorized",
+        success: false,
+      });
+    }
+
+    const { user_name, userRole } = req?.user || {};
+
+    const allowedRoles = ["super_admin", "admin"];
+
+    if (!allowedRoles.includes(userRole)) {
+      return res.status(403).json({
+        message: "Forbidden: You don't have permission to perform this action",
+        success: false,
+      });
+    }
+
     const { username, firstName, lastName, email, mobileNumber, password } =
       req.body;
 
@@ -88,6 +106,7 @@ export const userRegistration = async (req, res) => {
             mobileNumber: mobileNumber,
             password: hashPassword,
             updatedAt: generateTimeStamp(),
+            updatedBy: user_name,
           },
         },
       );
@@ -112,6 +131,8 @@ export const userRegistration = async (req, res) => {
         password: hashPassword,
         forgotPasswordToken: "",
         createdAt: generateTimeStamp(),
+        createdBy: user_name,
+        del_flag: true,
       });
 
       await newUser.save();
@@ -477,8 +498,9 @@ export const userLoginService = async (req, res) => {
 
     const payload = {
       userId: user?._id || "",
-      username: user?.username || "",
+      user_name: user?.username || "",
       email: user?.email || "",
+      userRole: user?.role || "member",
     };
 
     const accessToken = await jwt.sign(payload, process.env.JWT_SECRET, {
@@ -533,7 +555,7 @@ export const userLogoutService = async (req, res) => {
         success: false,
       });
     }
-	
+
     const { userId, username } = req.user;
 
     await LoginModel.updateOne(
