@@ -2,79 +2,79 @@ import jwt from "jsonwebtoken";
 import { LoginModel } from "../models/user.model.js";
 
 export const authenticateToken = (req, res, next) => {
-  try {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
 
-    console.log("authenticateToken called with token:", token)
+	try {
+		const authHeader = req.headers["authorization"];
+		const token = authHeader && authHeader.split(" ")[1];
 
-    if (!token) {
-      return res.status(401).json({ message: "Access token required" });
-    }
+		console.log("authenticateToken called with token:", token)
 
-    const loginUser = jwt.verify(token, process.env.JWT_SECRET);
+		if (!token) {
+			return res.status(401).json({ message: "Access token required" });
+		}
 
-    console.log("authenticateToken called with loginUser:", loginUser)
+		const loginUser = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (!loginUser) {
-      return res.status(400).json({
-        message: "token expired or invalid",
-        success: false,
-      });
-    }
+		console.log("authenticateToken called with loginUser:", loginUser)
 
-    req.user = loginUser;
+		if (!loginUser) {
+			return res.status(400).json({
+				message: "token expired or invalid",
+				success: false,
+			});
+		}
 
-    next();
-  } catch (error) {
-    console.log("Error in authenticating token", error);
-    res
-      .status(401)
-      .json({ success: false, message: error.message || "Unauthorized" });
-  }
+    	req.user = loginUser;
+
+    	next();
+  	} catch (error) {
+    	console.log("Error in authenticating token", error);
+    	res.status(401).json({ success: false, message: error.message || "Unauthorized" });
+ 	}
 };
 
 export const generateAccessToken = async (req, res) => {
-  try {
+	try {
 
-    console.log("generateAccessToken", req.user)
-    const payload = req.user;
+		console.log("generateAccessToken", req.user)
+		const payload = req.user;
 
-    const verifyRefreshToken = await jwt.verify(
-      payload?.refreshToken,
-      process.env.JWT_SECRET,
-    );
+		const verifyRefreshToken = await jwt.verify(
+			payload?.refreshToken,
+			process.env.JWT_SECRET,
+		);
 
-    if (!verifyRefreshToken) {
-      return res.status(400).json({
-        message: "token is expired or invalid please login again",
-        success: false,
-      });
-    }
+		if (!verifyRefreshToken) {
+			return res.status(400).json({
+				message: "token is expired or invalid please login again",
+				success: false,
+			});
+		}
 
-    const accessToken = await jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    const refreshToken = await jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "5h",
-    });
+		const accessToken = await jwt.sign(payload, process.env.JWT_SECRET, {
+			expiresIn: "1h",
+		});
 
-    await LoginModel.updateOne(
-      { _id: payload?.userId },
-      { $set: { accessToken: accessToken, refreshToken: refreshToken } },
-    );
+		const refreshToken = await jwt.sign(payload, process.env.JWT_SECRET, {
+			expiresIn: "5h",
+		});
 
-    return res.status(200).json({
-      message: "Token refreshed successfully",
-      success: true,
-      token: accessToken,
-      refreshToken: refreshToken,
-    });
-  } catch (error) {
-    console.log("Error in generating access token", error);
-    res.status(500).json({
-      success: false,
-      message: error.message || "Internal Server Error",
-    });
-  }
+		await LoginModel.updateOne(
+			{ _id: payload?.userId },
+			{ $set: { accessToken: accessToken, refreshToken: refreshToken } },
+		);
+
+		return res.status(200).json({
+			message: "Token refreshed successfully",
+			success: true,
+			token: accessToken,
+			refreshToken: refreshToken,
+		});
+  	} catch (error) {
+		console.log("Error in generating access token", error);
+		res.status(500).json({
+			success: false,
+			message: error.message || "Internal Server Error",
+		});
+	}
 };
