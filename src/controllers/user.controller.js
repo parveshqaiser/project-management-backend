@@ -18,23 +18,23 @@ import moment from "moment";
 
 export const userRegistration = async (req, res) => {
   try {
-    if (!req?.user) {
-      return res.status(401).json({
-        message: "Unauthorized",
-        success: false,
-      });
-    }
+    // if (!req?.user) {
+    //   return res.status(401).json({
+    //     message: "Unauthorized",
+    //     success: false,
+    //   });
+    // }
 
     const { user_name, userRole } = req?.user || {};
 
-    const allowedRoles = ["super_admin", "admin"];
+    // const allowedRoles = ["super_admin", "admin"];
 
-    if (!allowedRoles.includes(userRole)) {
-      return res.status(403).json({
-        message: "Forbidden: You don't have permission to perform this action",
-        success: false,
-      });
-    }
+    // if (!allowedRoles.includes(userRole)) {
+    //   return res.status(403).json({
+    //     message: "Forbidden: You don't have permission to perform this action",
+    //     success: false,
+    //   });
+    // }
 
     const { username, firstName, lastName, email, mobileNumber, password } =
       req.body;

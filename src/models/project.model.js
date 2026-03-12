@@ -5,17 +5,26 @@ import mongoose from "mongoose";
 const projectMemberSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+        ref: "users",
         required: true,
+    },
+    email : {
+        type : String,
     },
     role: {
         type: String,
-        enum: ["PROJECT_ADMIN", "MEMBER"],
-        default: "MEMBER",
+        enum: ["project_admin", "member","admin"],
+        default: "member",
     },
     },{_id:false})
 
 const ProjectSchema = new mongoose.Schema({
+    projectCode: {
+        type: String,
+        required: false,
+        default: () => `PR-${Date.now()}`,
+        unique: true,
+    },
     title : {
         type : String,
         required : true
@@ -30,11 +39,14 @@ const ProjectSchema = new mongoose.Schema({
         ref : "users"
     },
     startDate : {
-        type : String,
+        type : Date,
+        default : Date.now()
     },
-    attachments : [],
+    attachments : [{
+        type : String
+    }],
     members : [projectMemberSchema]
 }, {timestamps : true});
 
-const ProjectModel = new mongoose.model("user", ProjectSchema);
+const ProjectModel = new mongoose.model("projects", ProjectSchema);
 export default ProjectModel;

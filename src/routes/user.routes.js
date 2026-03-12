@@ -12,7 +12,7 @@ import { generateAccessToken, authenticateToken } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.post("/register", authenticateToken, userRegistration);
+router.post("/register",userRegistration);
 router.get("/verify-email", verifyEmailService);
 router.post("/forgot-password", forgotPasswordService);
 router.get("/verify-email-forgot-password", resetPasswordService);

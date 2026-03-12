@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { LoginModel } from "../models/user.model.js";
+import {LoginModel} from "../models/user.model.js";
 
 export const authenticateToken = (req, res, next) => {
 
@@ -7,7 +7,7 @@ export const authenticateToken = (req, res, next) => {
 		const authHeader = req.headers["authorization"];
 		const token = authHeader && authHeader.split(" ")[1];
 
-		console.log("authenticateToken called with token:", token)
+		// console.log("authenticateToken called with token:", token)
 
 		if (!token) {
 			return res.status(401).json({ message: "Access token required" });
@@ -15,7 +15,9 @@ export const authenticateToken = (req, res, next) => {
 
 		const loginUser = jwt.verify(token, process.env.JWT_SECRET);
 
-		console.log("authenticateToken called with loginUser:", loginUser)
+		// console.log("loginUser   ", loginUser);
+
+		// console.log("authenticateToken called with loginUser:", loginUser)
 
 		if (!loginUser) {
 			return res.status(400).json({
