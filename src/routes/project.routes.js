@@ -14,7 +14,7 @@ import {
 const router = express.Router();
 
 router.post("/", authenticateToken, createProject);
-router.post("/:projectId/members",addProjectMembers);
+router.post("/:projectId/members",authenticateToken,addProjectMembers);
 router.get("/",authenticateToken, getAllProjects);
 router.get("/:projectId",authenticateToken,getProject);
 router.put("/:projectId", authenticateToken, updateProject);
