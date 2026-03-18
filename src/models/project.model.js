@@ -16,7 +16,8 @@ const projectMemberSchema = new mongoose.Schema({
         enum: ["project_admin", "member","admin"],
         default: "member",
     },
-    },{_id:false})
+    },{_id:false}
+);
 
 const ProjectSchema = new mongoose.Schema({
     projectCode: {
@@ -40,11 +41,42 @@ const ProjectSchema = new mongoose.Schema({
     },
     startDate : {
         type : Date,
-        default : Date.now()
+        default : Date.now
     },
-    attachments : [{
-        type : String
-    }],
+    status : {
+        type: String,
+        required: true,
+        default: "Active",
+        enum: {
+            values: ["Active", "Planning", "Completed", "On Hold", "Cancelled"],
+            message: `{VALUE} is not a valid status`
+        }
+    },
+    attachments : [
+        {
+            url: {
+                type: String
+            },
+            fileName: {
+                type: String,
+                trim: true
+            },
+            fileType: {
+                type: String, // e.g. "image/png", "application/pdf
+            },
+            fileSize: {
+                type: Number, // in bytes
+            },
+            uploadedBy: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "users"
+            },
+            uploadedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
     members : [projectMemberSchema]
 }, {timestamps : true});
 

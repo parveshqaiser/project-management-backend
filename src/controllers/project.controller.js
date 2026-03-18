@@ -2,6 +2,7 @@
 import ProjectModel from "../models/project.model.js";
 import { UserModel } from "../models/user.model.js";
 import mongoose from "mongoose";
+/** @type {import("../models/project.model")} */
 
 
 const createProject = async(req, res)=>{
