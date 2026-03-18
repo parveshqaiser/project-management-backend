@@ -5,6 +5,7 @@ import cors from "cors";
 import dbConnection from "./database/db.js";
 import userRoutes from "./routes/user.routes.js";
 import projectRoutes from "./routes/project.routes.js";
+import taskRoutes from "./routes/task.routes.js";
 
 const app = express();
 const PORT = 6500;
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/projects",projectRoutes);
+app.use("/api/v1/tasks", taskRoutes);
 
 dbConnection()
 	.then(() => {
