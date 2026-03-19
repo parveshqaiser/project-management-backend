@@ -67,7 +67,6 @@ export const createTask = async(req, res)=>{
     }
 };
 
-
 export const getAllTask = async(req, res)=>{
     try {
         let currentUser = req.user;
@@ -182,6 +181,14 @@ export const deleteTask = async (req, res)=>{
 
         res.status(200).json({message : "Task Deleted", success : true})
 
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message, success: false });
+    }
+}
+
+export const updateAssignedTaskMember = async(req, res)=>{
+    try {
+        
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message, success: false });
     }

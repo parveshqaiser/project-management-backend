@@ -6,6 +6,8 @@ import dbConnection from "./database/db.js";
 import userRoutes from "./routes/user.routes.js";
 import projectRoutes from "./routes/project.routes.js";
 import taskRoutes from "./routes/task.routes.js";
+import notesRoutes from "./routes/notes.routes.js";
+
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -30,6 +32,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/projects",projectRoutes);
 app.use("/api/v1/tasks", taskRoutes);
+app.use("/api/v1/notes", notesRoutes);
 
 dbConnection()
 	.then(() => {
