@@ -30,18 +30,28 @@ const TaskSchema = new mongoose.Schema({
         enum: ["Low","Medium","High"]
     },
     dueDate : {
-        type: Date, 
+        type: String, 
         required: true
     },
     assignedTo : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users",
-        required: true,
+        userId : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "users",
+            required: true,
+        },
+        email : {
+            type : String
+        }
     },
     assignedBy : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users",
-        required: true,
+        userId : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "users",
+            required: true,
+        },
+        username : {
+            type : String
+        }
     },
 },{timestamps:true});
 
