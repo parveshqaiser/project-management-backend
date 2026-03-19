@@ -6,11 +6,13 @@ import dbConnection from "./database/db.js";
 import userRoutes from "./routes/user.routes.js";
 import projectRoutes from "./routes/project.routes.js";
 import taskRoutes from "./routes/task.routes.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = 6500;
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(
 	cors({

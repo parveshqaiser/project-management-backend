@@ -15,8 +15,6 @@ export const authenticateToken = (req, res, next) => {
 
 		const loginUser = jwt.verify(token, process.env.JWT_SECRET);
 
-		// console.log("loginUser   ", loginUser);
-
 		// console.log("authenticateToken called with loginUser:", loginUser)
 
 		if (!loginUser) {
