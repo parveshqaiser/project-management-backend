@@ -531,8 +531,16 @@ export const userLoginService = async (req, res) => {
         refreshToken: refreshToken,
       });
     }
-
-    return res.status(200).json({
+''
+    return res.status(200).cookie("token", accessToken, {
+            sameSite : "strict",
+            secure: true,
+            httpOnly:true
+          }).cookie("refreshToken", refreshToken,{
+            sameSite : "strict",
+            secure: true,
+            httpOnly:true, 
+        }).json({
       message: "Login successful",
       success: true,
       token: accessToken,
@@ -580,10 +588,18 @@ export const userLogoutService = async (req, res) => {
       },
     });
 
-    return res.status(200).json({
-      message: "Logout successful",
-      success: true,
-    });
+     return res.status(200).clearCookie("token",{
+            sameSite: "strict",
+            secure: true,
+            httpOnly: true,
+        }).clearCookie("refreshToken", {  
+          sameSite: "strict", 
+          secure: true, 
+          httpOnly: true}).
+          res.status(200).json({
+            message: "Logout successful",
+            success: true,
+      });
   } catch (error) {
     console.log("Error in user logout ", error);
     res.status(500).json({

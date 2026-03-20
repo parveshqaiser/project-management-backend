@@ -4,33 +4,26 @@ import {LoginModel} from "../models/user.model.js";
 export const authenticateToken = (req, res, next) => {
 
 	try {
-		const authHeader = req.headers["authorization"];
-		const token = authHeader && authHeader.split(" ")[1];
+		let token = req.cookies?.token || req.header("Authorization")?.replace("Bearer","");
 
-		// console.log("authenticateToken called with token:", token)
-
-		if (!token) {
-			return res.status(401).json({ message: "Access token required" });
-		}
+        if(!token){
+            return res.status(401).json({
+                message : "Unauthorized User", 
+                success : false, 
+                status : 401
+            });
+        }
 
 		const loginUser = jwt.verify(token, process.env.JWT_SECRET);
-
-		// console.log("authenticateToken called with loginUser:", loginUser)
-
-		if (!loginUser) {
-			return res.status(400).json({
-				message: "token expired or invalid",
-				success: false,
-			});
-		}
-
     	req.user = loginUser;
-
     	next();
+
   	} catch (error) {
-    	console.log("Error in authenticating token", error);
-    	res.status(401).json({ success: false, message: error.message || "Unauthorized" });
- 	}
+    	return res.status(401).json({
+            message: "Invalid or Expired Token",
+            success: false
+        });
+	}
 };
 
 export const generateAccessToken = async (req, res) => {
